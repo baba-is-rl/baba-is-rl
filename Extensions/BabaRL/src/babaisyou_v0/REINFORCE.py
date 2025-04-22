@@ -12,12 +12,12 @@ from torch.distributions import Categorical
 sys.path.append("../")  # this is a bit hacky but whatever...
 from environment import register_env
 
-ENV_ID = "baba-volcano-v0"
-MAP_PATH = "../../../Resources/Maps/volcano.txt"
+ENV_ID = "baba-babaisyou-v0"
+MAP_PATH = "../../../../Resources/Maps/baba_is_you.txt"
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-register_env(ENV_ID, MAP_PATH, "volcano")
+register_env(ENV_ID, MAP_PATH, "baba is you")
 env = gym.make(ENV_ID)
 
 
@@ -30,7 +30,7 @@ class Network(nn.Module):
         self.conv3 = nn.Conv2d(128, 128, 3, padding=1)
         self.conv4 = nn.Conv2d(128, 128, 3, padding=1)
         self.conv5 = nn.Conv2d(128, 1, 1, padding=0)
-        self.fc = nn.Linear(594, 4)
+        self.fc = nn.Linear(99, 4)
 
         self.log_probs = []
         self.rewards = []
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     for e in range(10000):
         score = 0
 
-        state = env.reset().reshape(1, -1, 18, 33)
+        state = env.reset().reshape(1, -1, 9, 11)
 
         step = 0
         while step < 200:
@@ -111,7 +111,7 @@ if __name__ == "__main__":
             env.render()
 
             next_state, reward, done, _ = env.step(action)
-            next_state = next_state.reshape(1, -1, 18, 33)
+            next_state = next_state.reshape(1, -1, 9, 11)
 
             net.rewards.append(reward)
             score += reward

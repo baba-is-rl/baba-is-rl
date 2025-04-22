@@ -14,7 +14,7 @@ sys.path.append("../")  # this is a bit hacky but whatever...
 from environment import register_env
 
 ENV_ID = "baba-volcano-v0"
-MAP_PATH = "../../../Resources/Maps/volcano.txt"
+MAP_PATH = "../../../../Resources/Maps/volcano.txt"
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

@@ -8,7 +8,7 @@ COLOR_BACKGROUND = pygame.Color(0, 0, 0)
 
 
 class Renderer:
-    def __init__(self, game, title, enable_render=True):
+    def __init__(self, game, title, sprites_path="../sprites", enable_render=True):
         pygame.init()
         pygame.display.set_caption(title)
 
@@ -25,7 +25,7 @@ class Renderer:
                 (self.screen_size[0], self.screen_size[1]), pygame.DOUBLEBUF
             )
 
-            self.sprite_loader = sprites.SpriteLoader()
+            self.sprite_loader = sprites.SpriteLoader(sprites_path)
             self.draw(game.GetMap())
 
     def draw_obj(self, map, x_pos, y_pos):

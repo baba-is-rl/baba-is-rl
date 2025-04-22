@@ -14,7 +14,7 @@ sys.path.append("../")  # this is a bit hacky but whatever...
 from environment import register_env
 
 ENV_ID = "baba-outofreach-v0"
-MAP_PATH = "../../../Resources/Maps/out_of_reach.txt"
+MAP_PATH = "../../../../Resources/Maps/out_of_reach.txt"
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
