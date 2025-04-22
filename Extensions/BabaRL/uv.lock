@@ -15,7 +15,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "gym", specifier = "==0.24" },
+    { name = "gym", specifier = "==0.23.1" },
     { name = "pybaba", directory = "../../" },
     { name = "pygame", specifier = ">=2.6.1" },
     { name = "tensorboardx", specifier = ">=2.6.2.2" },
@@ -51,14 +51,14 @@ wheels = [
 
 [[package]]
 name = "gym"
-version = "0.24.0"
+version = "0.23.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cloudpickle" },
     { name = "gym-notices" },
     { name = "numpy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/34/e8/c8953e7fb2e3b3a232a21f87248b87fe9354b8db74e79ece99f53ce31a3d/gym-0.24.0.tar.gz", hash = "sha256:69f96424be40d23088be978b61f45c23911e2ccddafad08cf2fac608e8bd86e4", size = 694359 }
+sdist = { url = "https://files.pythonhosted.org/packages/87/86/3f5467531428b6ce6f3c12d3121b4304d2ea1536a50775a4df036add37b8/gym-0.23.1.tar.gz", hash = "sha256:d0f9b9da34edbdace421c9442fc9205d03b8d15d0fb451053c766cde706d40e0", size = 626191 }
 
 [[package]]
 name = "gym-notices"

@@ -1,18 +1,24 @@
-import torch
-from torch import nn, optim
-import torch.nn.functional as F
-from torch.distributions import Categorical
-
 import copy
+import sys
 
 import gym
-import environment
 import pyBaba
-
+import torch
+import torch.nn.functional as F
 from tensorboardX import SummaryWriter
+from torch import nn, optim
+from torch.distributions import Categorical
+
+sys.path.append("../")  # this is a bit hacky but whatever...
+from environment import register_env
+
+ENV_ID = "baba-volcano-v0"
+MAP_PATH = "../../../Resources/Maps/volcano.txt"
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-env = gym.make('baba-volcano-v0')
+register_env(ENV_ID, MAP_PATH)
+env = gym.make(ENV_ID)
 
 
 class Network(nn.Module):
@@ -86,7 +92,7 @@ def train():
     del net.rewards[:]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     writer = SummaryWriter()
 
     global_step = 0
@@ -118,8 +124,7 @@ if __name__ == '__main__':
 
         train()
 
-        writer.add_scalar('Reward', score, e)
-        writer.add_scalar('Step', step, e)
+        writer.add_scalar("Reward", score, e)
+        writer.add_scalar("Step", step, e)
 
-        print(
-            f'Episode {e}: score: {score:.3f} time_step: {global_step} step: {step}')
+        print(f"Episode {e}: score: {score:.3f} time_step: {global_step} step: {step}")

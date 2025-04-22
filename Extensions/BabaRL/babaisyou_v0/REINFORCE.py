@@ -1,18 +1,24 @@
-import torch
-from torch import nn, optim
-import torch.nn.functional as F
-from torch.distributions import Categorical
-
 import copy
+import sys
 
 import gym
-import environment
 import pyBaba
-
+import torch
+import torch.nn.functional as F
 from tensorboardX import SummaryWriter
+from torch import nn, optim
+from torch.distributions import Categorical
+
+sys.path.append("../")  # this is a bit hacky but whatever...
+from environment import register_env
+
+ENV_ID = "baba-babaisyou-v0"
+MAP_PATH = "../../../Resources/Maps/baba_is_you.txt"
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-env = gym.make('baba-outofreach-v0')
+register_env(ENV_ID, MAP_PATH)
+env = gym.make(ENV_ID)
 
 
 class Network(nn.Module):
@@ -24,7 +30,7 @@ class Network(nn.Module):
         self.conv3 = nn.Conv2d(128, 128, 3, padding=1)
         self.conv4 = nn.Conv2d(128, 128, 3, padding=1)
         self.conv5 = nn.Conv2d(128, 1, 1, padding=0)
-        self.fc = nn.Linear(352, 4)
+        self.fc = nn.Linear(99, 4)
 
         self.log_probs = []
         self.rewards = []
@@ -86,7 +92,7 @@ def train():
     del net.rewards[:]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     writer = SummaryWriter()
 
     global_step = 0
@@ -94,7 +100,7 @@ if __name__ == '__main__':
     for e in range(10000):
         score = 0
 
-        state = env.reset().reshape(1, -1, 16, 22)
+        state = env.reset().reshape(1, -1, 9, 11)
 
         step = 0
         while step < 200:
@@ -105,7 +111,7 @@ if __name__ == '__main__':
             env.render()
 
             next_state, reward, done, _ = env.step(action)
-            next_state = next_state.reshape(1, -1, 16, 22)
+            next_state = next_state.reshape(1, -1, 9, 11)
 
             net.rewards.append(reward)
             score += reward
@@ -118,8 +124,7 @@ if __name__ == '__main__':
 
         train()
 
-        writer.add_scalar('Reward', score, e)
-        writer.add_scalar('Step', step, e)
+        writer.add_scalar("Reward", score, e)
+        writer.add_scalar("Step", step, e)
 
-        print(
-            f'Episode {e}: score: {score:.3f} time_step: {global_step} step: {step}')
+        print(f"Episode {e}: score: {score:.3f} time_step: {global_step} step: {step}")

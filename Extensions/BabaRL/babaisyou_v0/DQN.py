@@ -1,22 +1,27 @@
-import torch
-from torch import nn, optim
-import torch.nn.functional as F
-
-from collections import namedtuple
 import random
-import numpy as np
+import sys
+from collections import namedtuple
 
 import gym
-import environment
+import numpy as np
 import pyBaba
-
+import torch
+import torch.nn.functional as F
 from tensorboardX import SummaryWriter
+from torch import nn, optim
+
+sys.path.append("../")  # this is a bit hacky but whatever...
+from environment import register_env
+
+ENV_ID = "baba-babaisyou-v0"
+MAP_PATH = "../../../Resources/Maps/baba_is_you.txt"
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-env = gym.make('baba-babaisyou-v0')
+register_env(ENV_ID, MAP_PATH)
+env = gym.make(ENV_ID)
 
-Transition = namedtuple(
-    'Transition', ('state', 'action', 'next_state', 'reward'))
+Transition = namedtuple("Transition", ("state", "action", "next_state", "reward"))
 
 
 class ReplayMemory:
@@ -43,8 +48,9 @@ class Network(nn.Module):
     def __init__(self):
         super(Network, self).__init__()
 
-        self.conv1 = nn.Conv2d(pyBaba.Preprocess.TENSOR_DIM,
-                               64, 3, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(
+            pyBaba.Preprocess.TENSOR_DIM, 64, 3, padding=1, bias=False
+        )
         self.bn1 = nn.BatchNorm2d(64)
         self.conv2 = nn.Conv2d(64, 64, 3, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(64)
@@ -99,12 +105,15 @@ def train():
 
     actions = tuple((map(lambda a: torch.tensor([[int(a) - 1]]), batch.action)))
     rewards = tuple(
-        (map(lambda r: torch.tensor([r], dtype=torch.float32), batch.reward)))
+        (map(lambda r: torch.tensor([r], dtype=torch.float32), batch.reward))
+    )
 
-    non_final_mask = torch.tensor(tuple(
-        map(lambda s: s is not None, batch.next_state)), device=device, dtype=torch.bool)
-    non_final_next_states = torch.cat(
-        [s for s in batch.next_state if s is not None])
+    non_final_mask = torch.tensor(
+        tuple(map(lambda s: s is not None, batch.next_state)),
+        device=device,
+        dtype=torch.bool,
+    )
+    non_final_next_states = torch.cat([s for s in batch.next_state if s is not None])
 
     state_batch = torch.cat(batch.state).to(device)
     action_batch = torch.cat(actions).to(device)
@@ -113,13 +122,11 @@ def train():
     q_values = net(state_batch).gather(1, action_batch)
 
     next_q_values = torch.zeros(BATCH_SIZE, device=device)
-    next_q_values[non_final_mask] = target_net(
-        non_final_next_states).max(1)[0].detach()
+    next_q_values[non_final_mask] = target_net(non_final_next_states).max(1)[0].detach()
 
     expected_state_action_values = (next_q_values * GAMMA) + reward_batch
 
-    loss = F.smooth_l1_loss(
-        q_values, expected_state_action_values.unsqueeze(1))
+    loss = F.smooth_l1_loss(q_values, expected_state_action_values.unsqueeze(1))
 
     opt.zero_grad()
     loss.backward()
@@ -130,7 +137,7 @@ def train():
     opt.step()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     writer = SummaryWriter()
 
     global_step = 0
@@ -165,18 +172,19 @@ if __name__ == '__main__':
             if env.done:
                 break
 
-        writer.add_scalar('Reward', score, e)
-        writer.add_scalar('Step', step, e)
-        writer.add_scalar('Epsilon', EPSILON, e)
+        writer.add_scalar("Reward", score, e)
+        writer.add_scalar("Step", step, e)
+        writer.add_scalar("Epsilon", EPSILON, e)
 
         scores.append(score)
 
         print(
-            f'Episode {e}: score: {score:.3f} time_step: {global_step} step: {step} epsilon: {EPSILON}')
+            f"Episode {e}: score: {score:.3f} time_step: {global_step} step: {step} epsilon: {EPSILON}"
+        )
 
-        if np.mean(scores[-min(50, len(scores)):]) > 180:
-            print('Solved!')
-            torch.save(net.state_dict(), 'dqn_agent.bin')
+        if np.mean(scores[-min(50, len(scores)) :]) > 180:
+            print("Solved!")
+            torch.save(net.state_dict(), "dqn_agent.bin")
             break
 
         if e % TARGET_UPDATE == 0:
