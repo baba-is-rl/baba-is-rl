@@ -49,8 +49,8 @@ pip install -U .
 ```
 
 ### Reinforcement Learning
-The RL algorithms are implemented in [Extensions/BabaRL/]("./Extensions/BabaRL").
+The RL algorithms are implemented in [Extensions/BabaRL/](./Extensions/BabaRL).
 
-We recommend using [ `uv` ](https://github.com/astral-sh/uv)  for running the algorithms / installing deps.
+We recommend using [`uv`](https://github.com/astral-sh/uv)  for running the algorithms / installing deps.
 
-e.g: `uv run python DQN.py` will run the DQN algorithm inside [Extensions/BabaRL/baba-babaisyou-v0]("./Extensions/BabaRL/baba-babaisyou-v0")
+e.g: `uv run python DQN.py` will run the DQN algorithm inside [Extensions/BabaRL/baba-babaisyou-v0](./Extensions/BabaRL/baba-babaisyou-v0)
