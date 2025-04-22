@@ -15,7 +15,7 @@ class SpriteLoader:
 
         for i in self.icon_images:
             self.icon_images[i] = pygame.transform.scale(pygame.image.load(
-                './sprites/icon/{}.gif'.format(self.icon_images[i])), (BLOCK_SIZE, BLOCK_SIZE))
+                '../sprites/icon/{}.gif'.format(self.icon_images[i])), (BLOCK_SIZE, BLOCK_SIZE))
 
         self.text_images = {pyBaba.ObjectType.BABA: 'BABA',
                             pyBaba.ObjectType.IS: 'IS',
@@ -32,4 +32,4 @@ class SpriteLoader:
 
         for i in self.text_images:
             self.text_images[i] = pygame.transform.scale(pygame.image.load(
-                './sprites/text/{}.gif'.format(self.text_images[i])), (BLOCK_SIZE, BLOCK_SIZE))
+                '../sprites/text/{}.gif'.format(self.text_images[i])), (BLOCK_SIZE, BLOCK_SIZE))
