@@ -1,0 +1,15 @@
+[project]
+name = "babarl"
+version = "0.1.0"
+description = "rl algorithms for Baba Is You"
+requires-python = ">=3.10"
+dependencies = [
+    "gym==0.24",
+    "pybaba",
+    "pygame>=2.6.1",
+    "tensorboardx>=2.6.2.2",
+    "torch>=2.6.0",
+]
+
+[tool.uv.sources]
+pybaba = { path = "../../" }
