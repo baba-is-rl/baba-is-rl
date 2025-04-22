@@ -18,7 +18,7 @@ MAP_PATH = "../../../Resources/Maps/baba_is_you.txt"
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-register_env(ENV_ID, MAP_PATH)
+register_env(ENV_ID, MAP_PATH, "baba is you")
 env = gym.make(ENV_ID)
 
 Transition = namedtuple("Transition", ("state", "action", "next_state", "reward"))

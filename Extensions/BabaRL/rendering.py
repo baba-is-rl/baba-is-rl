@@ -1,25 +1,29 @@
-import pygame
 import pyBaba
+import pygame
+
 import sprites
 
 BLOCK_SIZE = 48
 COLOR_BACKGROUND = pygame.Color(0, 0, 0)
 
 
-class Renderer():
-    def __init__(self, game, enable_render=True):
+class Renderer:
+    def __init__(self, game, title, enable_render=True):
         pygame.init()
-        pygame.display.set_caption('OpenAI Gym - baba-volcano-v0')
+        pygame.display.set_caption(title)
 
         self.game = game
         self.game_over = False
         self.enable_render = enable_render
 
         if self.enable_render is True:
-            self.screen_size = (game.GetMap().GetWidth() * BLOCK_SIZE,
-                                game.GetMap().GetHeight() * BLOCK_SIZE)
+            self.screen_size = (
+                game.GetMap().GetWidth() * BLOCK_SIZE,
+                game.GetMap().GetHeight() * BLOCK_SIZE,
+            )
             self.screen = pygame.display.set_mode(
-                (self.screen_size[0], self.screen_size[1]), pygame.DOUBLEBUF)
+                (self.screen_size[0], self.screen_size[1]), pygame.DOUBLEBUF
+            )
 
             self.sprite_loader = sprites.SpriteLoader()
             self.draw(game.GetMap())
@@ -43,12 +47,12 @@ class Renderer():
             for x_pos in range(map.GetWidth()):
                 self.draw_obj(map, x_pos, y_pos)
 
-    def render(self, map, mode='human'):
+    def render(self, map, mode="human"):
         try:
             if not self.game_over:
                 self.draw(map)
 
-                if mode == 'human':
+                if mode == "human":
                     self.draw(map)
                     pygame.display.flip()
 

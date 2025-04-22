@@ -1,30 +1,31 @@
 import gym
 import numpy as np
 import pyBaba
-import rendering
 from gym.envs.registration import register
 from gym.utils import seeding
 
+import rendering
 
-def register_env(env_id: str, path: str):
+
+def register_env(env_id: str, path: str, display_title: str):
     register(
         id=env_id,
         entry_point="environment:BabaEnv",
         max_episode_steps=200,
         nondeterministic=True,
-        kwargs={"path": path},
+        kwargs={"path": path, "display_title": display_title},
     )
 
 
 class BabaEnv(gym.Env):
     metadata = {"render.modes": ["human", "rgb_array"]}
 
-    def __init__(self, path, enable_render=True):
+    def __init__(self, path, display_title, enable_render=True):
         super(BabaEnv, self).__init__()
 
         self.path = path
         self.game = pyBaba.Game(self.path)
-        self.renderer = rendering.Renderer(self.game)
+        self.renderer = rendering.Renderer(self.game, display_title)
 
         self.action_space = [
             pyBaba.Direction.UP,
