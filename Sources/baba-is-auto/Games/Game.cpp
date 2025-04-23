@@ -36,6 +36,11 @@ const Map& Game::GetMap() const
     return m_map;
 }
 
+const std::vector<Rule> Game::GetAllRules() const
+{
+    return m_ruleManager.GetAllRules();
+}
+
 RuleManager& Game::GetRuleManager()
 {
     return m_ruleManager;

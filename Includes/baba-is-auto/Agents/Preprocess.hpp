@@ -28,6 +28,8 @@ class Preprocess
     //! \param game The game state.
     //! \return The converted tensor.
     static std::vector<float> StateToTensor(const Game& game);
+
+    static std::vector<Rule> GetAllRules(const Game& game);
 };
 }  // namespace baba_is_auto
 

@@ -16,5 +16,6 @@ void AddPreprocess(pybind11::module& m)
 {
     pybind11::class_<Preprocess>(m, "Preprocess")
         .def_static("StateToTensor", &Preprocess::StateToTensor)
+        .def_static("GetAllRules", &Preprocess::GetAllRules)
         .def_readonly_static("TENSOR_DIM", &Preprocess::TENSOR_DIM);
 }

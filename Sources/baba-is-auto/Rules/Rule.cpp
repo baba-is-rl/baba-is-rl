@@ -17,4 +17,9 @@ bool Rule::operator==(const Rule& rhs) const
 {
     return objects == rhs.objects;
 }
+
+std::tuple<Object, Object, Object> Rule::GetObjects() const
+{
+    return objects;
+}
 }  // namespace baba_is_auto

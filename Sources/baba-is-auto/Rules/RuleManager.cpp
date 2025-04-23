@@ -30,6 +30,17 @@ void RuleManager::ClearRules()
     m_rules.clear();
 }
 
+std::vector<Rule> RuleManager::GetAllRules() const
+{
+    std::vector<Rule> ret;
+
+    for (auto& rule : m_rules)
+    {
+        ret.emplace_back(rule);
+    }
+
+    return ret;
+}
 std::vector<Rule> RuleManager::GetRules(ObjectType type) const
 {
     std::vector<Rule> ret;

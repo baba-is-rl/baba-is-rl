@@ -38,6 +38,8 @@ class Game
     //! \return A map object.
     const Map& GetMap() const;
 
+    const std::vector<Rule> GetAllRules() const;
+
     //! Gets a rule manager object.
     //! \return A rule manager object.
     RuleManager& GetRuleManager();

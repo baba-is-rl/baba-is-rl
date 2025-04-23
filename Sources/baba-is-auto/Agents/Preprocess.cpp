@@ -62,4 +62,9 @@ std::vector<float> Preprocess::StateToTensor(const Game& game)
 
     return tensor;
 }
+
+std::vector<Rule> Preprocess::GetAllRules(const Game& game)
+{
+    return game.GetAllRules();
+}
 }  // namespace baba_is_auto

@@ -1,3 +1,4 @@
+.cache
 *.bin
 *.egg-info/
 # CMake temp/cache files

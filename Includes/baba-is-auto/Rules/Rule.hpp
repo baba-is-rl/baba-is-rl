@@ -35,6 +35,8 @@ class Rule
     bool operator==(const Rule& rhs) const;
 
     std::tuple<Object, Object, Object> objects;
+
+    std::tuple<Object, Object, Object> GetObjects() const;
 };
 }  // namespace baba_is_auto
 
