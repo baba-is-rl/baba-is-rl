@@ -1,3 +1,5 @@
+logs/
+runs/
 .cache
 *.bin
 *.egg-info/
