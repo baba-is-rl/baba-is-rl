@@ -1,10 +1,51 @@
+import os
+
+import numpy as np
 import pyBaba
 import pygame
 
 import sprites
+from sprites import BLOCK_SIZE
 
-BLOCK_SIZE = 48
 COLOR_BACKGROUND = pygame.Color(0, 0, 0)
+
+LAYER_PRIORITY = {
+    # Floor/Background Tiles
+    pyBaba.ObjectType.ICON_TILE: 0,
+    pyBaba.ObjectType.ICON_GRASS: 0,
+    pyBaba.ObjectType.ICON_WATER: 0,
+    pyBaba.ObjectType.ICON_LAVA: 0,
+    pyBaba.ObjectType.ICON_EMPTY: -1,
+    # Mid-level Objects (Characters, Items)
+    pyBaba.ObjectType.ICON_BABA: 10,
+    pyBaba.ObjectType.ICON_ROCK: 10,
+    pyBaba.ObjectType.ICON_FLAG: 10,
+    pyBaba.ObjectType.ICON_WALL: 10,
+    pyBaba.ObjectType.ICON_SKULL: 10,
+    # Text Objects (Drawn on top)
+    pyBaba.ObjectType.BABA: 20,
+    pyBaba.ObjectType.IS: 20,
+    pyBaba.ObjectType.YOU: 20,
+    pyBaba.ObjectType.FLAG: 20,
+    pyBaba.ObjectType.WIN: 20,
+    pyBaba.ObjectType.WALL: 20,
+    pyBaba.ObjectType.STOP: 20,
+    pyBaba.ObjectType.ROCK: 20,
+    pyBaba.ObjectType.PUSH: 20,
+    pyBaba.ObjectType.WATER: 20,
+    pyBaba.ObjectType.SINK: 20,
+    pyBaba.ObjectType.LAVA: 20,
+    pyBaba.ObjectType.MELT: 20,
+    pyBaba.ObjectType.HOT: 20,
+    pyBaba.ObjectType.SKULL: 20,
+    pyBaba.ObjectType.DEFEAT: 20,
+}
+
+DEFAULT_PRIORITY = 15
+
+
+def get_layer_priority(obj_type):
+    return LAYER_PRIORITY.get(obj_type, DEFAULT_PRIORITY)
 
 
 class Renderer:
@@ -16,107 +57,180 @@ class Renderer:
         self.sprite_loader = None
 
         if self.enable_render:
-            pygame.init()
-            pygame.display.set_caption(title)
-            self.screen_size = (
-                game.GetMap().GetWidth() * BLOCK_SIZE,
-                game.GetMap().GetHeight() * BLOCK_SIZE,
-            )
             try:
+                pygame.init()
+                pygame.display.set_caption(title)
+                map_width = game.GetMap().GetWidth()
+                map_height = game.GetMap().GetHeight()
+                self.screen_size = (map_width * BLOCK_SIZE, map_height * BLOCK_SIZE)
+
                 self.screen = pygame.display.set_mode(
                     (self.screen_size[0], self.screen_size[1]), pygame.DOUBLEBUF
                 )
+                print(
+                    f"Pygame display initialized ({self.screen_size[0]}x{self.screen_size[1]})"
+                )
+
+                if not os.path.isdir(
+                    os.path.join(sprites_path, "icon")
+                ) or not os.path.isdir(os.path.join(sprites_path, "text")):
+                    print(
+                        f"Warning: Sprite directories not found in {sprites_path}. Check path."
+                    )
+                    self.sprite_loader = None
+                else:
+                    print(f"Loading sprites from: {sprites_path}")
+                    self.sprite_loader = sprites.SpriteLoader(sprites_path)
+
             except pygame.error as e:
-                print(f"Error setting display mode: {e}")
+                print(f"Error initializing Pygame display: {e}")
                 self.enable_render = False
-                pygame.quit()
-                return
+                self.screen = None
+                try:
+                    pygame.quit()
+                except Exception as _:
+                    pass
+            except ImportError:
+                print("Error importing sprites module. Ensure sprites.py exists.")
+                self.enable_render = False
 
-            self.sprite_loader = sprites.SpriteLoader(sprites_path)
+    def draw_obj(self, map_obj, x_pos, y_pos):
+        if not self.enable_render or self.screen is None or self.sprite_loader is None:
+            return
 
-    def draw_obj(self, map, x_pos, y_pos):
-        objects = map.At(x_pos, y_pos)
+        objects = map_obj.At(x_pos, y_pos)
+        obj_types = objects.GetTypes()
 
-        for obj_type in objects.GetTypes():
+        sprites_to_draw = []
+
+        for obj_type in obj_types:
+            priority = get_layer_priority(obj_type)
+            if priority < 0:
+                continue
+
+            img_surface = None
             try:
                 if pyBaba.IsTextType(obj_type):
-                    if self.sprite_loader:
-                        obj_image = self.sprite_loader.text_images[obj_type]
-                    else:
-                        continue
+                    if obj_type in self.sprite_loader.text_images:
+                        img_surface = self.sprite_loader.text_images[obj_type]
+                    # else: print(f"Missing text sprite for {obj_type}")
                 else:
-                    if obj_type == pyBaba.ObjectType.ICON_EMPTY:
-                        continue
+                    if obj_type in self.sprite_loader.icon_images:
+                        img_surface = self.sprite_loader.icon_images[obj_type]
+                    # else: print(f"Missing icon sprite for {obj_type}")
 
-                    if self.sprite_loader:
-                        obj_image = self.sprite_loader.icon_images[obj_type]
-                    else:
-                        continue
+                if img_surface:
+                    img_rect = img_surface.get_rect()
+                    img_rect.topleft = (x_pos * BLOCK_SIZE, y_pos * BLOCK_SIZE)
+                    sprites_to_draw.append((priority, img_surface, img_rect))
 
-                obj_rect = obj_image.get_rect()
-                obj_rect.topleft = (x_pos * BLOCK_SIZE, y_pos * BLOCK_SIZE)
-
-                if self.screen:
-                    self.screen.blit(obj_image, obj_rect)
             except KeyError:
                 print(
-                    f"Warning: Missing sprite for object type {obj_type} at ({x_pos}, {y_pos})"
+                    f"Warning: Missing sprite key for object type {obj_type} at ({x_pos}, {y_pos})"
                 )
             except AttributeError as e:
-                print(f"AttributeError during drawing object: {e}")
+                if "NoneType" in str(
+                    e
+                ) and "'NoneType' object has no attribute 'text_images'" in str(e):
+                    pass
+                else:
+                    print(f"AttributeError during drawing object {obj_type}: {e}")
 
-    def draw(self, map):
-        if not self.enable_render or self.screen is None:
+        sprites_to_draw.sort(key=lambda item: item[0])
+
+        for _, surface, rect in sprites_to_draw:
+            try:
+                self.screen.blit(surface, rect)
+            except pygame.error as blit_error:
+                print(f"Error blitting sprite at {rect.topleft}: {blit_error}")
+                self.game_over = True
+                break
+
+    def draw(self, map_obj):
+        if not self.enable_render or self.screen is None or self.game_over:
             return
-
-        self.screen.fill(COLOR_BACKGROUND)
-
-        for y_pos in range(map.GetHeight()):
-            for x_pos in range(map.GetWidth()):
-                self.draw_obj(map, x_pos, y_pos)
-
-    def render(self, map, mode="human"):
-        if not self.enable_render:
-            self.process_event()
-            return
-
         try:
-            if not self.game_over:
-                self.draw(map)
-
-                if mode == "human":
-                    pygame.display.flip()
-
-            self.process_event()
-
-        except Exception as e:
-            print(f"Error during render/event processing: {e}")
+            self.screen.fill(COLOR_BACKGROUND)
+            for y_pos in range(map_obj.GetHeight()):
+                for x_pos in range(map_obj.GetWidth()):
+                    self.draw_obj(map_obj, x_pos, y_pos)
+        except pygame.error as e:
+            print(f"Error during drawing background/looping: {e}")
             self.game_over = True
-            self.quit_game()
-            raise e
+
+    def render(self, map_obj, mode="human"):
+        if not self.enable_render or self.screen is None or self.game_over:
+            if mode == "rgb_array":
+                try:
+                    h = self.game.GetMap().GetHeight() * BLOCK_SIZE
+                    w = self.game.GetMap().GetWidth() * BLOCK_SIZE
+                    return np.zeros((h, w, 3), dtype=np.uint8)
+                except Exception as _:
+                    return np.zeros((100, 100, 3), dtype=np.uint8)
+            return None
+
+        self.process_event()
+        if self.game_over:
+            if mode == "rgb_array":
+                try:
+                    h = self.game.GetMap().GetHeight() * BLOCK_SIZE
+                    w = self.game.GetMap().GetWidth() * BLOCK_SIZE
+                    return np.zeros((h, w, 3), dtype=np.uint8)
+                except Exception as _:
+                    return np.zeros((100, 100, 3), dtype=np.uint8)
+            return None
+
+        self.draw(map_obj)
+
+        if mode == "human":
+            try:
+                pygame.display.flip()
+            except pygame.error as e:
+                print(f"Error during pygame.display.flip(): {e}")
+                self.game_over = True
+                return None
+        elif mode == "rgb_array":
+            try:
+                return pygame.surfarray.array3d(self.screen).transpose(1, 0, 2)
+            except pygame.error as e:
+                print(f"Error getting rgb_array: {e}")
+                self.game_over = True
+                try:
+                    h = self.game.GetMap().GetHeight() * BLOCK_SIZE
+                    w = self.game.GetMap().GetWidth() * BLOCK_SIZE
+                    return np.zeros((h, w, 3), dtype=np.uint8)
+                except Exception as _:
+                    return np.zeros((100, 100, 3), dtype=np.uint8)
+
+        return None
 
     def process_event(self):
-        if not self.game_over:
-            try:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        self.game_over = True
-                        self.quit_game()
-            except pygame.error as e:
-                if "pygame not initialized" in str(e):
-                    print("Pygame not initialized, cannot process events.")
+        if not self.enable_render:
+            return
+        try:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    print("Quit event received.")
                     self.game_over = True
-                else:
-                    raise e
+                    self.quit_game()
+        except pygame.error as e:
+            if "video system not initialized" not in str(e):
+                print(f"Pygame error during event processing: {e}")
+            self.game_over = True
 
     def quit_game(self):
-        self.game_over = True
         if self.enable_render:
+            print("Attempting Pygame quit...")
             try:
                 pygame.display.quit()
             except pygame.error as e:
-                print(f"Error during pygame.display.quit(): {e}")
-        try:
-            pygame.quit()
-        except pygame.error as e:
-            print(f"Error during pygame.quit(): {e}")
+                if "display Surface quit" not in str(
+                    e
+                ) and "video system not initialized" not in str(e):
+                    print(f"Error during pygame.display.quit(): {e}")
+            try:
+                pygame.quit()
+                print("Pygame quit successfully.")
+            except pygame.error as e:
+                if "video system not initialized" not in str(e):
+                    print(f"Error during pygame.quit(): {e}")
