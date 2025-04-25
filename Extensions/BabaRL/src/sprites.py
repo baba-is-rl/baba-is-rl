@@ -16,6 +16,8 @@ class SpriteLoader:
             pyBaba.ObjectType.ICON_GRASS: "GRASS",
             pyBaba.ObjectType.ICON_TILE: "TILE",
             pyBaba.ObjectType.ICON_LAVA: "LAVA",
+            pyBaba.ObjectType.ICON_SKULL: "SKULL",
+            pyBaba.ObjectType.ICON_FLOWER: "FLOWER",
         }
 
         self.icon_images = {}
@@ -40,6 +42,9 @@ class SpriteLoader:
             pyBaba.ObjectType.LAVA: "LAVA",
             pyBaba.ObjectType.MELT: "MELT",
             pyBaba.ObjectType.HOT: "HOT",
+            pyBaba.ObjectType.SKULL: "SKULL",
+            pyBaba.ObjectType.DEFEAT: "DEFEAT",
+            pyBaba.ObjectType.FLOWER: "FLOWER",
         }
 
         self.text_images = {}
