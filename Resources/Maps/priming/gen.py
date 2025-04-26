@@ -4,7 +4,7 @@ import pyBaba as baba
 
 
 def _map_to_baba(word: str) -> str:
-    actual_word = word
+    actual_word = word.upper()
     if word.startswith("I_"):
         actual_word = f"ICON_{word.split('_')[1]}"
     elif word == "_":
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         new_filename = filename.removesuffix(".lvl") + ".txt"
         print(f"{filename} -> {new_filename}")
         with open(filename, "r") as f:
-            data = f.read()
+            data = f.read().strip()
 
         with open(new_filename, "w") as f:
             f.write(to_baba(data))
