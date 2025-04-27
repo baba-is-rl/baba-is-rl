@@ -1,5 +1,6 @@
 logs/
 runs/
+checkpoints/
 .cache
 *.bin
 *.egg-info/
