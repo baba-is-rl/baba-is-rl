@@ -181,12 +181,6 @@ bool Game::CanMove(std::size_t x, std::size_t y, Direction dir)
 
     const std::vector<ObjectType> types = m_map.At(_x, _y).GetTypes();
 
-    // Check the icon has property 'STOP'.
-    if (m_ruleManager.HasProperty(types, ObjectType::STOP))
-    {
-        return false;
-    }
-
     if (m_ruleManager.HasProperty(types, ObjectType::PUSH) ||
         m_map.At(_x, _y).HasTextType())
     {
@@ -194,6 +188,14 @@ bool Game::CanMove(std::size_t x, std::size_t y, Direction dir)
         {
             return false;
         }
+
+        return true;
+    }
+
+    // Check the icon has property 'STOP'.
+    if (m_ruleManager.HasProperty(types, ObjectType::STOP))
+    {
+        return false;
     }
 
     return true;
