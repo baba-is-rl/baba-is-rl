@@ -5,6 +5,7 @@ import pyBaba
 import pygame
 
 import sprites
+from constants import MAX_MAP_HEIGHT, MAX_MAP_WIDTH
 from sprites import BLOCK_SIZE
 
 COLOR_BACKGROUND = pygame.Color(0, 0, 0)
@@ -55,13 +56,15 @@ class Renderer:
         self.enable_render = enable_render
         self.screen = None
         self.sprite_loader = None
+        self.screen_size = (0, 0)
 
         if self.enable_render:
             try:
                 pygame.init()
                 pygame.display.set_caption(title)
-                map_width = game.GetMap().GetWidth()
-                map_height = game.GetMap().GetHeight()
+                initial_map = game.GetMap()
+                map_width = initial_map.GetWidth()
+                map_height = initial_map.GetHeight()
                 self.screen_size = (map_width * BLOCK_SIZE, map_height * BLOCK_SIZE)
 
                 self.screen = pygame.display.set_mode(
@@ -93,6 +96,34 @@ class Renderer:
             except ImportError:
                 print("Error importing sprites module. Ensure sprites.py exists.")
                 self.enable_render = False
+
+    def update_game_reference(self, new_game_instance):
+        """Updates the game instance the renderer refers to."""
+        self.game = new_game_instance
+
+    def update_display_size(self, new_width, new_height):
+        """Recreates the Pygame screen with new dimensions if they changed."""
+        if not self.enable_render:
+            return
+
+        new_screen_size_pixels = (new_width * BLOCK_SIZE, new_height * BLOCK_SIZE)
+
+        if new_screen_size_pixels != self.screen_size:
+            print(
+                f"Renderer: Resizing display from {self.screen_size} to {new_screen_size_pixels}"
+            )
+            self.screen_size = new_screen_size_pixels
+            try:
+                self.screen = pygame.display.set_mode(
+                    (self.screen_size[0], self.screen_size[1]),
+                    pygame.DOUBLEBUF | pygame.RESIZABLE,
+                )
+                # self.draw(self.game.GetMap())
+                # pygame.display.flip()
+            except pygame.error as e:
+                print(f"Renderer: Error resizing display: {e}")
+                # self.enable_render = False
+                # self.screen = None
 
     def draw_obj(self, map_obj, x_pos, y_pos):
         if not self.enable_render or self.screen is None or self.sprite_loader is None:
@@ -150,34 +181,35 @@ class Renderer:
         if not self.enable_render or self.screen is None or self.game_over:
             return
         try:
+            current_map_height = map_obj.GetHeight()
+            current_map_width = map_obj.GetWidth()
+
             self.screen.fill(COLOR_BACKGROUND)
-            for y_pos in range(map_obj.GetHeight()):
-                for x_pos in range(map_obj.GetWidth()):
+            for y_pos in range(current_map_height):
+                for x_pos in range(current_map_width):
                     self.draw_obj(map_obj, x_pos, y_pos)
         except pygame.error as e:
             print(f"Error during drawing background/looping: {e}")
             self.game_over = True
+        except AttributeError:
+            print("Error: Invalid map object passed to draw.")
+            self.game_over = True
 
     def render(self, map_obj, mode="human"):
-        if not self.enable_render or self.screen is None or self.game_over:
+        if not self.enable_render or self.screen is None:
             if mode == "rgb_array":
-                try:
-                    h = self.game.GetMap().GetHeight() * BLOCK_SIZE
-                    w = self.game.GetMap().GetWidth() * BLOCK_SIZE
-                    return np.zeros((h, w, 3), dtype=np.uint8)
-                except Exception as _:
-                    return np.zeros((100, 100, 3), dtype=np.uint8)
+                h = MAX_MAP_HEIGHT * BLOCK_SIZE
+                w = MAX_MAP_WIDTH * BLOCK_SIZE
+                return np.zeros((h, w, 3), dtype=np.uint8)
             return None
 
         self.process_event()
+
         if self.game_over:
             if mode == "rgb_array":
-                try:
-                    h = self.game.GetMap().GetHeight() * BLOCK_SIZE
-                    w = self.game.GetMap().GetWidth() * BLOCK_SIZE
-                    return np.zeros((h, w, 3), dtype=np.uint8)
-                except Exception as _:
-                    return np.zeros((100, 100, 3), dtype=np.uint8)
+                h = MAX_MAP_HEIGHT * BLOCK_SIZE
+                w = MAX_MAP_WIDTH * BLOCK_SIZE
+                return np.zeros((h, w, 3), dtype=np.uint8)
             return None
 
         self.draw(map_obj)
@@ -195,14 +227,11 @@ class Renderer:
             except pygame.error as e:
                 print(f"Error getting rgb_array: {e}")
                 self.game_over = True
-                try:
-                    h = self.game.GetMap().GetHeight() * BLOCK_SIZE
-                    w = self.game.GetMap().GetWidth() * BLOCK_SIZE
-                    return np.zeros((h, w, 3), dtype=np.uint8)
-                except Exception as _:
-                    return np.zeros((100, 100, 3), dtype=np.uint8)
+                h = MAX_MAP_HEIGHT * BLOCK_SIZE
+                w = MAX_MAP_WIDTH * BLOCK_SIZE
+                return np.zeros((h, w, 3), dtype=np.uint8)
 
-        return None
+        return None 
 
     def process_event(self):
         if not self.enable_render:
