@@ -7,7 +7,7 @@ import pygame
 import config
 import sprites
 
-MAP_PATH = "lvl6.txt"
+MAP_PATH = "../../Resources/Maps/priming/lvl6.txt"
 SPRITES_PATH = "./sprites"
 
 icon_images_map = {
