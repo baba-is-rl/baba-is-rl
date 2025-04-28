@@ -1,0 +1,10 @@
+11 9
+BABA    IS      YOU     _       _       _       _       _       WALL    IS      STOP
+I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL 
+I_TILE  I_TILE  I_TILE  I_TILE  I_ROCK  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE
+I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE
+I_TILE  I_BABA  I_TILE  I_TILE  I_TILE  I_ROCK  I_TILE  I_TILE  I_TILE  I_FLAG  I_TILE
+I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_ROCK  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE
+I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL
+_       _       _       _       _       _       _       _       ROCK    IS      STOP
+FLAG    IS      WIN     _       ROCK    IS      HOT     _       BABA    IS      MELT
