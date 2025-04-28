@@ -41,7 +41,9 @@ class CMakeBuild(build_ext):
                       '-DPYTHON_EXECUTABLE=' + sys.executable,
                       '-DBUILD_FROM_PIP=ON']
 
-        cmake_args += [f'-DCMAKE_OSX_ARCHITECTURES={platform.machine()}']
+        if platform.system() == "Darwin":
+            mac_arch = platform.machine()
+            cmake_args += [f'-DCMAKE_OSX_ARCHITECTURES={mac_arch}']
 
 
         cfg = 'Debug' if self.debug else 'Release'
