@@ -41,6 +41,9 @@ class CMakeBuild(build_ext):
                       '-DPYTHON_EXECUTABLE=' + sys.executable,
                       '-DBUILD_FROM_PIP=ON']
 
+        cmake_args += [f'-DCMAKE_OSX_ARCHITECTURES={platform.machine()}']
+
+
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]
 
