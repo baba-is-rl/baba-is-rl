@@ -303,4 +303,42 @@ void Game::CheckPlayState()
         }
     }
 }
+
+std::vector<Position> Game::GetPlayerPosition()
+{
+    std::vector<Position> playerPositions;
+    const std::size_t width = m_map.GetWidth();
+    const std::size_t height = m_map.GetHeight();
+
+    for (std::size_t y = 0; y < height; ++y)
+    {
+        for (std::size_t x = 0; x < width; ++x)
+        {
+            const std::vector<ObjectType> typesInCell =
+                m_map.At(x, y).GetTypes();
+
+            bool isPlayerCell = false;
+            for (ObjectType type : typesInCell)
+            {
+                if (IsTextType(type))
+                {
+                    continue;
+                }
+
+                if (m_ruleManager.HasProperty({ type }, ObjectType::YOU))
+                {
+                    isPlayerCell = true;
+                    break;
+                }
+            }
+
+            if (isPlayerCell)
+            {
+                playerPositions.emplace_back(x, y);
+            }
+        }
+    }
+
+    return playerPositions;
+}
 }  // namespace baba_is_auto

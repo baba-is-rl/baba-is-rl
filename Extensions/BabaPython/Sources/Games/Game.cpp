@@ -8,6 +8,7 @@
 #include <baba-is-auto/Games/Game.hpp>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 using namespace baba_is_auto;
 
@@ -21,5 +22,6 @@ void AddGame(pybind11::module& m)
         .def("GetRuleManager", &Game::GetRuleManager)
         .def("GetPlayState", &Game::GetPlayState)
         .def("GetPlayerIcon", &Game::GetPlayerIcon)
-        .def("MovePlayer", &Game::MovePlayer);
+        .def("MovePlayer", &Game::MovePlayer)
+        .def("GetPlayerPosition", &Game::GetPlayerPosition);
 }

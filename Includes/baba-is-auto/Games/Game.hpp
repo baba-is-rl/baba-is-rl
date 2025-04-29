@@ -56,6 +56,8 @@ class Game
     //! \param dir The direction to move the player.
     void MovePlayer(Direction dir);
 
+    std::vector<Position> GetPlayerPosition();
+
  private:
     //! Parses a list of rules.
     void ParseRules();
