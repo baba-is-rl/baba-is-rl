@@ -54,7 +54,7 @@ def get_parser():
         type=str,
         default=DEFAULT_MAP_PATH,
         metavar="MAP_FILE",
-        help="path to %(metavar)",
+        help="path to %(metavar)s",
     )
     return parser
 
