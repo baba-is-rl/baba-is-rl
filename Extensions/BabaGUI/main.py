@@ -1,5 +1,6 @@
 import os
 import sys
+from argparse import ArgumentParser
 
 import pyBaba
 import pygame
@@ -7,7 +8,7 @@ import pygame
 import config
 import sprites
 
-MAP_PATH = "../../Resources/Maps/priming/lvl6.txt"
+DEFAULT_MAP_PATH = "out_of_reach.txt"
 SPRITES_PATH = "./sprites"
 
 icon_images_map = {
@@ -44,13 +45,28 @@ text_images_map = {
     pyBaba.ObjectType.FLOWER: "FLOWER",
 }
 
+
+def get_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--file",
+        "-f",
+        type=str,
+        default=DEFAULT_MAP_PATH,
+        metavar="MAP_FILE",
+        help="path to %(metavar)",
+    )
+    return parser
+
+
+args = get_parser().parse_args()
 pygame.init()
 pygame.font.init()
 
 try:
-    game = pyBaba.Game(MAP_PATH)
+    game = pyBaba.Game(args.file)
 except Exception as e:
-    print(f"Error loading map '{MAP_PATH}': {e}")
+    print(f"Error loading map '{args.file}': {e}")
     sys.exit(1)
 
 screen_size = (
