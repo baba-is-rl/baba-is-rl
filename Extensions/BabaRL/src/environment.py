@@ -24,12 +24,13 @@ def register_env(
     maps_dir: str = "../../../Resources/Maps",
     sprites_path: str = "../sprites",
     enable_render: bool = True,
+    max_episode_steps: int = 400,
 ):
     map_path = os.path.join(maps_dir, map_name)
     register(
         id=env_id,
         entry_point="environment:BabaEnv",
-        max_episode_steps=200,
+        max_episode_steps=max_episode_steps,
         nondeterministic=True,
         kwargs={
             "map_path": map_path,
@@ -176,7 +177,7 @@ class BabaEnv(gym.Env):
             reward = -1.0
         elif result == pyBaba.PlayState.WON:
             self.done = True
-            reward = 1.0
+            reward = 2.0
         else:
             self.done = False
             reward = -0.01
@@ -202,4 +203,3 @@ class BabaEnv(gym.Env):
         """Clean up resources."""
         if self.enable_render and self.renderer:
             self.renderer.quit_game()
-

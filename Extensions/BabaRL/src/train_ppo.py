@@ -32,13 +32,14 @@ ANNEAL_LR = True  # Whether to linearly anneal learning rate
 # Curriculum
 LEVELS = [
     "priming/lvl1.txt",
+    "priming/lvl2a.txt",
+    "priming/lvl2b.txt",
     "baba_is_you.txt",
-    "priming/lvl2.txt",
     "priming/lvl3.txt",
-    "priming/lvl7.txt",
     "priming/lvl4.txt",
     "priming/lvl5.txt",
     "priming/lvl6.txt",
+    "priming/lvl7.txt",
     "out_of_reach.txt",
     "off_limits.txt",
 ]
@@ -78,12 +79,13 @@ def dict_to_torch(obs_dict, device):
     return grid, rules, rule_mask
 
 
-if __name__ == "__main__":
+def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=1, help="Random seed")
-    parser.add_argument("--cuda", action="store_true", help="Use Cuda")
+    parser.add_argument("--cuda", "-c", action="store_true", help="Use Cuda")
     parser.add_argument(
-        "--run_name",
+        "--run-name",
+        "-r",
         type=str,
         default=f"ppo_baba_{int(time.time())}",
         help="Run name for logs/checkpoints",
@@ -94,8 +96,35 @@ if __name__ == "__main__":
         type=str,
         help="path to checkpoint file to load state from",
     )
-    args = parser.parse_args()
+    parser.add_argument(
+        "--disable-render",
+        "-d",
+        action="store_true",
+        help="disable rendering while training",
+    )
+    parser.add_argument(
+        "--save-after",
+        "-s",
+        type=int,
+        default=50,
+        metavar="N",
+        help="save model state after %(metavar)s episodes",
+    )
+    parser.add_argument(
+        "--max-steps",
+        "-m",
+        type=int,
+        default=400,
+        metavar="N",
+        help="max number of steps per episode",
+    )
+    return parser
 
+
+if __name__ == "__main__":
+    args = get_parser().parse_args()
+
+    print("Called With:", args)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     if args.cuda and torch.cuda.is_available():
@@ -123,6 +152,7 @@ if __name__ == "__main__":
         os.path.splitext(current_map_name)[0],
         MAPS_DIR,
         SPRITES_PATH,
+        enable_render=not args.disable_render,
     )
     env = gym.make(env_id)
     env.seed(args.seed)
@@ -306,6 +336,7 @@ if __name__ == "__main__":
                             os.path.splitext(current_map_name)[0],
                             MAPS_DIR,
                             SPRITES_PATH,
+                            enable_render=not args.disable_render,
                         )
                         env.close()
                         env = gym.make(env_id)
@@ -446,7 +477,7 @@ if __name__ == "__main__":
         )
         start_time = time.time()
 
-        if update % 20 == 0:  # Save every 20 updates
+        if update % args.save_after == 0:  # Save every 20 updates
             checkpoint_path = os.path.join(
                 run_checkpoint_dir, f"ppo_baba_update_{update}.pth"
             )
