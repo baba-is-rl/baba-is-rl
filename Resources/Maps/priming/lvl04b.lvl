@@ -1,0 +1,10 @@
+11 9
+WALL    IS      YOU     _       _       _       _       _       BABA    IS      STOP
+I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA 
+I_TILE  I_TILE  FLAG    IS      _       I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_FLAG
+I_TILE  I_TILE  I_TILE  I_TILE  WIN     I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE
+I_TILE  I_WALL  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE
+I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE
+I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA  I_BABA
+_       _       _       _       _       _       _       _       _       _       _
+_       _       _       _       _       _       _       _       _       _       _
