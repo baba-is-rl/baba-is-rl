@@ -6,5 +6,5 @@ I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_ROCK  I_TILE  I_TILE  I_TILE  I_TILE  
 I_TILE  I_BABA  I_TILE  I_TILE  I_TILE  I_ROCK  I_TILE  I_TILE  I_TILE  I_FLAG  I_TILE
 I_TILE  I_TILE  I_TILE  I_TILE  I_TILE  I_ROCK  I_TILE  I_TILE  I_TILE  I_TILE  I_TILE
 I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL  I_WALL
-_       _       _       _       _       _       _       _       ROCK    IS      PUSH
-FLAG    IS      WIN     _       _       _       _       _       _       _       _
+_       _       _       _       _       _       _       _       ROCK    IS      _
+FLAG    IS      WIN     _       _       _       _       _       _       _       PUSH

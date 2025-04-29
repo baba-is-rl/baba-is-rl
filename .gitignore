@@ -1,4 +1,4 @@
-Resources/Maps/**/*.txt
+Resources/Maps/priming/*.txt
 logs/
 runs/
 checkpoints/
