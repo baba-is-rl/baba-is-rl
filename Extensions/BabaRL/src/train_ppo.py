@@ -2,6 +2,7 @@ import argparse
 import os
 import time
 from collections import deque
+from glob import glob
 
 import gym
 import numpy as np
@@ -29,28 +30,22 @@ NUM_STEPS = 2048  # Steps per policy update (collect N steps)
 MAX_TRAIN_STEPS = 10_000_000  # Total training steps
 ANNEAL_LR = True  # Whether to linearly anneal learning rate
 
-# Curriculum
-LEVELS = [
-    "priming/lvl1.txt",
-    "priming/lvl2a.txt",
-    "priming/lvl2b.txt",
-    "baba_is_you.txt",
-    "priming/lvl3.txt",
-    "priming/lvl4.txt",
-    "priming/lvl5.txt",
-    "priming/lvl6.txt",
-    "priming/lvl7.txt",
-    "out_of_reach.txt",
-    "off_limits.txt",
-]
 MAPS_DIR = "../../../Resources/Maps"
 SPRITES_PATH = "../sprites"
 CHECKPOINT_DIR = "./checkpoints"
 LOG_DIR = "./logs"
 
+# Curriculum
+LEVELS = [
+    *sorted(glob("priming/*txt", root_dir=MAPS_DIR)),
+    "baba_is_you.txt",
+    "out_of_reach.txt",
+    # "off_limits.txt",
+]
+
 # Curriculum parameters
-CURRICULUM_THRESHOLD = 0.9  # Avg win rate to advance (adjust)
-CURRICULUM_WINDOW = 70  # Episodes to average for threshold
+CURRICULUM_THRESHOLD = 0.85  # Avg win rate to advance (adjust)
+CURRICULUM_WINDOW = 50  # Episodes to average for threshold
 
 
 def compute_gae(next_value, rewards, dones, values, gamma, lambda_):
@@ -114,7 +109,7 @@ def get_parser():
         "--max-steps",
         "-m",
         type=int,
-        default=400,
+        default=200,
         metavar="N",
         help="max number of steps per episode",
     )
