@@ -10,6 +10,7 @@
 #include <baba-is-auto/Enums/RuleEnums.hpp>
 #include <baba-is-auto/Games/Map.hpp>
 #include <baba-is-auto/Rules/RuleManager.hpp>
+#include <set>
 
 #include <string>
 
@@ -56,7 +57,7 @@ class Game
     //! \param dir The direction to move the player.
     void MovePlayer(Direction dir);
 
-    std::vector<Position> GetPlayerPosition();
+    std::set<Position> GetPlayerPosition();
 
  private:
     //! Parses a list of rules.

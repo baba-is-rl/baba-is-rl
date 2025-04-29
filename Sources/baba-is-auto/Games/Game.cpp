@@ -304,9 +304,9 @@ void Game::CheckPlayState()
     }
 }
 
-std::vector<Position> Game::GetPlayerPosition()
+std::set<Position> Game::GetPlayerPosition()
 {
-    std::vector<Position> playerPositions;
+    std::set<Position> playerPositions;
     const std::size_t width = m_map.GetWidth();
     const std::size_t height = m_map.GetHeight();
 
@@ -334,7 +334,7 @@ std::vector<Position> Game::GetPlayerPosition()
 
             if (isPlayerCell)
             {
-                playerPositions.emplace_back(x, y);
+                playerPositions.emplace(x, y);
             }
         }
     }
