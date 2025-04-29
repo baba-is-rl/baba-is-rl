@@ -96,6 +96,16 @@ std::vector<Position> Map::GetPositions(ObjectType type) const
     return res;
 }
 
+std::vector<Object> Map::GetObjects()
+{
+    return m_objects;
+}
+
+void Map::SetObjects(std::vector<Object> objects)
+{
+    m_objects = objects;
+}
+
 bool Map::IsBoundary(std::size_t x, std::size_t y) const
 {
     return x == 0 || x == m_width - 1 || y == 0 || y == m_height - 1;

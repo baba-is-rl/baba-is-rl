@@ -58,6 +58,8 @@ class Game
     void MovePlayer(Direction dir);
 
     std::set<Position> GetPlayerPosition();
+    std::vector<Object> GetObjects();
+    void SetObjects(std::vector<Object> objects);
 
  private:
     //! Parses a list of rules.

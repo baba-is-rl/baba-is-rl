@@ -19,6 +19,18 @@ Game::Game(std::string_view filename)
     m_playState = PlayState::PLAYING;
 }
 
+std::vector<Object> Game::GetObjects()
+{
+    return m_map.GetObjects();
+}
+
+void Game::SetObjects(std::vector<Object> objects)
+{
+    m_map.SetObjects(objects);
+    ParseRules();
+    CheckPlayState();
+}
+
 void Game::Reset()
 {
     m_map.Reset();

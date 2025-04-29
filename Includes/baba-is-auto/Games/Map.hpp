@@ -76,6 +76,8 @@ class Map
     //! \param type An object type to get a list of positions.
     //! \return A list of icon positions.
     std::vector<Position> GetPositions(ObjectType type) const;
+    std::vector<Object> GetObjects();
+    void SetObjects(std::vector<Object> objects);
 
  private:
     //! Checks position (x, y) is boundary.
