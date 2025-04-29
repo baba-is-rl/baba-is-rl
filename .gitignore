@@ -1,3 +1,4 @@
+Resources/Maps/**/*.txt
 logs/
 runs/
 checkpoints/

@@ -4,6 +4,8 @@
 // personal capacity and am not conveying any rights to any intellectual
 // property of any third parties.
 
+#include <algorithm>
+#include <baba-is-auto/Enums/GameEnums.hpp>
 #include <baba-is-auto/Games/Game.hpp>
 
 namespace baba_is_auto
@@ -241,7 +243,8 @@ void Game::ProcessMove(std::size_t x, std::size_t y, Direction dir,
         }
     }
 
-    else if (m_ruleManager.HasProperty(types, ObjectType::SINK))
+    else if (m_ruleManager.HasProperty(types, ObjectType::SINK) &&
+             !std::any_of(types.begin(), types.end(), IsTextType))
     {
         m_map.RemoveObject(x, y, type);
 
@@ -260,7 +263,6 @@ void Game::ProcessMove(std::size_t x, std::size_t y, Direction dir,
         m_map.RemoveObject(x, y, type);
         return;
     }
-
     else if (m_map.At(_x, _y).HasTextType())
     {
         ProcessMove(_x, _y, dir, types[0]);
