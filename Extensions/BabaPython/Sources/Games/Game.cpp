@@ -23,5 +23,7 @@ void AddGame(pybind11::module& m)
         .def("GetPlayState", &Game::GetPlayState)
         .def("GetPlayerIcon", &Game::GetPlayerIcon)
         .def("MovePlayer", &Game::MovePlayer)
-        .def("GetPlayerPosition", &Game::GetPlayerPosition);
+        .def("GetPlayerPosition", &Game::GetPlayerPosition)
+        .def("GetObjects", &Game::GetObjects)
+        .def("SetObjects", &Game::SetObjects);
 }
