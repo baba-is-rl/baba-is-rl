@@ -17,7 +17,10 @@ std::map<ObjectType, std::size_t> TENSOR_DIM_MAP = {
     { ObjectType::ICON_WALL, 6 }, { ObjectType::ICON_ROCK, 7 },
     { ObjectType::ICON_BABA, 8 }, { ObjectType::ICON_FLAG, 9 },
     { ObjectType::WALL, 10 },     { ObjectType::STOP, 11 },
-    { ObjectType::ROCK, 12 },     { ObjectType::PUSH, 13 }
+    { ObjectType::ROCK, 12 },     { ObjectType::PUSH, 13 },
+    { ObjectType::WATER, 14 },    { ObjectType::ICON_WATER, 15 },
+    { ObjectType::SINK, 16 },     { ObjectType::DEFEAT, 17 },
+    { ObjectType::SKULL, 18 },    { ObjectType::ICON_SKULL, 19 }
 };
 
 std::vector<float> Preprocess::StateToTensor(const Game& game)

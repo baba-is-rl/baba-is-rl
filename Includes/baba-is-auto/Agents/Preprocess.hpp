@@ -21,8 +21,8 @@ namespace baba_is_auto
 class Preprocess
 {
  public:
-    //! The dimension of the tensor. (14 + 2)
-    constexpr static int TENSOR_DIM = 16;
+    //! The dimension of the tensor.
+    constexpr static int TENSOR_DIM = 22;
 
     //! Converts the game state to the tensor.
     //! \param game The game state.
