@@ -54,3 +54,7 @@ The RL algorithms are implemented in [Extensions/BabaRL/](./Extensions/BabaRL).
 We recommend using [`uv`](https://github.com/astral-sh/uv)  for running the algorithms / installing deps.
 
 e.g: `uv run train_ppo.py` will run the PPO algorithm inside [Extensions/BabaRL/src](./Extensions/BabaRL/src).
+
+### Project Report
+
+Project report can be found at [baba_is_rl_report.pdf](./baba_is_rl_report.pdf).
